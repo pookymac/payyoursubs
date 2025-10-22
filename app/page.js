@@ -1,39 +1,46 @@
-export default function Home() {
+
+"use client";
+
+import { useEffect } from "react";
+import useAuthListener from "@/lib/useAuthListener";
+import { logoutUser } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+
+export default function AppPage() {
+  const { user, loading } = useAuthListener();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/auth/login");
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-white bg-slate-900">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  const handleLogout = async () => {
+    await logoutUser();
+    router.push("/auth/login");
+  };
+
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        padding: "2rem",
-        background: "#0B0C10",
-        color: "#ffffff",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-        PayYourSubs
-      </h1>
-      <p style={{ fontSize: "1.3rem", maxWidth: "600px", marginBottom: "2rem" }}>
-        The easiest way for clubs, teams, and groups to collect member
-        subscriptions online.
+    <main className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white">
+      <h1 className="text-3xl font-bold mb-4">PayYourSubs Dashboard</h1>
+      <p className="mb-8 text-gray-400">
+        Logged in as: {user.email}
       </p>
-      <a
-        href="mailto:info@payyoursubs.com"
-        style={{
-          background: "#66FCF1",
-          color: "#0B0C10",
-          padding: "0.8rem 1.5rem",
-          borderRadius: "6px",
-          fontWeight: "bold",
-          textDecoration: "none",
-        }}
+      <button
+        onClick={handleLogout}
+        className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg text-white font-medium"
       >
-        Get Notified at Launch
-      </a>
+        Log Out
+      </button>
     </main>
   );
 }
