@@ -5,7 +5,7 @@ import { loginUser } from "@/lib/auth";
 import AuthForm from "@/components/AuthForm";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function LoginPage() { 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
